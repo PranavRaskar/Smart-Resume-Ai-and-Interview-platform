@@ -35,9 +35,6 @@ import pandas as pd
 import json
 import streamlit as st
 import datetime
-from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
-import av
-import wave
 import tempfile
 from voice_interview.question_generator import generate_questions
 from voice_interview.voice_engine import transcribe_audio
@@ -2728,10 +2725,7 @@ class ResumeApp:
         st.subheader(f"Question {q_index + 1}")
         st.write(current_question)
         st.subheader("🎙 Record Your Answer")
-
-        from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
         import tempfile
-        import wave
 
         audio_file = st.audio_input("Click to record your answer")
 
