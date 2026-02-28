@@ -33,3 +33,6 @@ python-pptx
 matplotlib
 seaborn
 pypdf2
+
+openai-whisper
+torch
