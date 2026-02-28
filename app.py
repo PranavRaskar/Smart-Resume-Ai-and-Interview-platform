@@ -539,7 +539,7 @@ class ResumeApp:
         """Render the dashboard page"""
         self.dashboard_manager.render_dashboard()
 
-        st.toast("Check out these repositories: [Awesome Hacking](https://github.com/Hunterdii/Awesome-Hacking)", icon="ℹ️")
+        #st.toast("Check out these repositories: [Awesome Hacking](https://github.com/Hunterdii/Awesome-Hacking)", icon="ℹ️")
 
 
     def render_empty_state(self, icon, message):
@@ -993,7 +993,7 @@ class ResumeApp:
                 print(f"Full traceback: {traceback.format_exc()}")
                 st.error(f"❌ Error preparing resume data: {str(e)}")
 
-        st.toast("Check out these repositories: [30-Days-Of-Rust](https://github.com/Hunterdii/30-Days-Of-Rust)", icon="ℹ️")
+        #st.toast("Check out these repositories: [30-Days-Of-Rust](https://github.com/Hunterdii/30-Days-Of-Rust)", icon="ℹ️")
 
     
 
@@ -2766,7 +2766,7 @@ class ResumeApp:
         # Admin login/logout in sidebar
         with st.sidebar:
             st_lottie(self.load_lottie_url("https://assets5.lottiefiles.com/packages/lf20_xyadoh9h.json"), height=200, key="sidebar_animation")
-            st.title("Smart Resume AI")
+            st.title("Smart Resume AI & Mock Interview")
             st.markdown("---")
             
             # Navigation buttons
