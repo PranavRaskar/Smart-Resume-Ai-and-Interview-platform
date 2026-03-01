@@ -597,20 +597,6 @@ class DashboardManager:
         
         return stats
 
-    def get_admin_logs(self):
-        """Get admin logs"""
-        cursor = self.conn.cursor()
-        try:
-            cursor.execute('''
-            SELECT admin_email, action, timestamp
-            FROM admin_logs
-            ORDER BY timestamp DESC
-            ''')
-            return cursor.fetchall()
-        except Exception as e:
-            print(f"Error fetching admin logs: {str(e)}")
-            return []
-
     def render_dashboard(self):
         """Main dashboard rendering function"""
         # Apply styling

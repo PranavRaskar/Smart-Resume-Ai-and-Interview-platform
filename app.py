@@ -23,8 +23,7 @@ from config.courses import COURSES_BY_CATEGORY, RESUME_VIDEOS, INTERVIEW_VIDEOS,
 from config.job_roles import JOB_ROLES
 from config.database import (
     get_database_connection, save_resume_data, save_analysis_data,
-    init_database, verify_admin, log_admin_action, save_ai_analysis_data,
-    get_ai_analysis_stats, reset_ai_analysis_stats, get_detailed_ai_analysis_stats
+    init_database, save_ai_analysis_data, get_detailed_ai_analysis_stats
 )
 from utils.ai_resume_analyzer import AIResumeAnalyzer
 from utils.resume_builder import ResumeBuilder
@@ -76,10 +75,6 @@ class ResumeApp:
         # Initialize navigation state
         if 'page' not in st.session_state:
             st.session_state.page = 'home'
-
-        # Initialize admin state
-        if 'is_admin' not in st.session_state:
-            st.session_state.is_admin = False
 
         self.pages = {
             "🏠 HOME": self.render_home,
@@ -467,26 +462,7 @@ class ResumeApp:
         </style>
         """, unsafe_allow_html=True)
         
-    def add_footer(self):
-        """Add a footer to all pages"""
-        st.markdown("<hr style='margin-top: 50px; margin-bottom: 20px;'>", unsafe_allow_html=True)
-        
-        col1, col2, col3 = st.columns([1, 3, 1])
-        
-        with col2:
-            # GitHub star button with lottie animation
-            st.markdown("""
-            <div style='display: flex; justify-content: center; align-items: center; margin-bottom: 10px;'>
-                <a href='' target='_blank' style='text-decoration: none;'>
-                    <div style='display: flex; align-items: center; background-color: #24292e; padding: 5px 10px; border-radius: 5px; transition: all 0.3s ease;'>
-                        <svg height="16" width="16" viewBox="0 0 16 16" version="1.1" style='margin-right: 5px;'>
-                            <path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z" fill="gold"></path>
-                        </svg>
-                        <span style='color: white; font-size: 14px;'></span>
-                    </div>
-                </a>
-            </div>
-            """, unsafe_allow_html=True)
+    
             
             
 
@@ -1518,21 +1494,6 @@ class ResumeApp:
                         # Add AI Analyzer Stats in an expander
             with st.expander("📊 AI Analyzer Statistics", expanded=False):
                 try:
-                    # Add a reset button for admin users
-                    if st.session_state.get('is_admin', False):
-                        if st.button(
-    "🔄 Reset AI Analysis Statistics",
-    type="secondary",
-     key="reset_ai_stats_button_2"):
-                            from config.database import reset_ai_analysis_stats
-                            result = reset_ai_analysis_stats()
-                            if result["success"]:
-                                st.success(result["message"])
-                            else:
-                                st.error(result["message"])
-                            # Refresh the page to show updated stats
-                            st.experimental_rerun()
-
                     # Get detailed AI analysis statistics
                     from config.database import get_detailed_ai_analysis_stats
                     ai_stats = get_detailed_ai_analysis_stats()
@@ -2776,39 +2737,6 @@ class ResumeApp:
                     st.session_state.page = cleaned_name
                     st.rerun()
 
-            # Add some space before admin login
-            st.markdown("<br><br>", unsafe_allow_html=True)
-            st.markdown("---")
-
-            # Admin Login/Logout section at bottom
-            if st.session_state.get('is_admin', False):
-                st.success(f"Logged in as: {st.session_state.get('current_admin_email')}")
-                if st.button("Logout", key="logout_button"):
-                    try:
-                        log_admin_action(st.session_state.get('current_admin_email'), "logout")
-                        st.session_state.is_admin = False
-                        st.session_state.current_admin_email = None
-                        st.success("Logged out successfully!")
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"Error during logout: {str(e)}")
-            else:
-                with st.expander("👤 Admin Login"):
-                    admin_email_input = st.text_input("Email", key="admin_email_input")
-                    admin_password = st.text_input("Password", type="password", key="admin_password_input")
-                    if st.button("Login", key="login_button"):
-                            try:
-                                if verify_admin(admin_email_input, admin_password):
-                                    st.session_state.is_admin = True
-                                    st.session_state.current_admin_email = admin_email_input
-                                    log_admin_action(admin_email_input, "login")
-                                    st.success("Logged in successfully!")
-                                    st.rerun()
-                                else:
-                                    st.error("Invalid credentials")
-                            except Exception as e:
-                                st.error(f"Error during login: {str(e)}")
-        
             # Display the repository notification in the sidebar
             self.show_repo_notification()
 
@@ -2833,7 +2761,7 @@ class ResumeApp:
             self.render_home()
     
         # Add footer to every page
-        self.add_footer()
+        #self.add_footer()
 
 if __name__ == "__main__":
     app = ResumeApp()

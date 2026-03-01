@@ -62,26 +62,6 @@ def init_database():
     )
     ''')
     
-    # Create admin_logs table
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS admin_logs (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        admin_email TEXT NOT NULL,
-        action TEXT NOT NULL,
-        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-    ''')
-    
-    # Create admin table
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS admin (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-    ''')
-    
     conn.commit()
     conn.close()
 
@@ -188,40 +168,6 @@ def get_resume_stats():
     finally:
         conn.close()
 
-def log_admin_action(admin_email, action):
-    """Log admin login/logout actions"""
-    conn = get_database_connection()
-    cursor = conn.cursor()
-    
-    try:
-        cursor.execute('''
-        INSERT INTO admin_logs (admin_email, action)
-        VALUES (?, ?)
-        ''', (admin_email, action))
-        conn.commit()
-    except Exception as e:
-        print(f"Error logging admin action: {str(e)}")
-    finally:
-        conn.close()
-
-def get_admin_logs():
-    """Get all admin login/logout logs"""
-    conn = get_database_connection()
-    cursor = conn.cursor()
-    
-    try:
-        cursor.execute('''
-        SELECT admin_email, action, timestamp
-        FROM admin_logs
-        ORDER BY timestamp DESC
-        ''')
-        return cursor.fetchall()
-    except Exception as e:
-        print(f"Error getting admin logs: {str(e)}")
-        return []
-    finally:
-        conn.close()
-
 def get_all_resume_data():
     """Get all resume data for admin dashboard"""
     conn = get_database_connection()
@@ -253,36 +199,6 @@ def get_all_resume_data():
     except Exception as e:
         print(f"Error getting resume data: {str(e)}")
         return []
-    finally:
-        conn.close()
-
-def verify_admin(email, password):
-    """Verify admin credentials"""
-    conn = get_database_connection()
-    cursor = conn.cursor()
-    
-    try:
-        cursor.execute('SELECT * FROM admin WHERE email = ? AND password = ?', (email, password))
-        result = cursor.fetchone()
-        return bool(result)
-    except Exception as e:
-        print(f"Error verifying admin: {str(e)}")
-        return False
-    finally:
-        conn.close()
-
-def add_admin(email, password):
-    """Add a new admin"""
-    conn = get_database_connection()
-    cursor = conn.cursor()
-    
-    try:
-        cursor.execute('INSERT INTO admin (email, password) VALUES (?, ?)', (email, password))
-        conn.commit()
-        return True
-    except Exception as e:
-        print(f"Error adding admin: {str(e)}")
-        return False
     finally:
         conn.close()
 
